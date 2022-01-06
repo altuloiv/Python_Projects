@@ -15,6 +15,6 @@ for x in fileList:
     if x.endswith('.txt'):
         with conn:
             cur = conn.cursor()
-            cur.execute("INSERT INTO tbl_files VALUES(?)", (x,))
+            cur.execute("INSERT INTO tbl_files (col_fileName) VALUES(?)", (x,))
             print(x)
 conn.close()
