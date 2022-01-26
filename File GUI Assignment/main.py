@@ -1,72 +1,49 @@
-
-import tkinter
+from tkinter import filedialog
 from tkinter import *
-from tkinter import filedialog as fd
-import shutil
 import os
+import time
+import shutil
+root = Tk()
+root.title('File Manager')
+root.geometry("500x500")
+
+def chooseSource():
+    src = filedialog.askdirectory()
+    srcEntry.insert(0, src)
 
 
-class ParentWindow(Frame):
-    def __init__ (self, master):
-        Frame.__init__ (self)
-
-        self.master = master
-        self.master.resizable(width=False, height=False)
-        self.master.geometry('{}x{}'.format(700, 400))
-        self.master.title('HTML Assignment')
-        self.master.config(bg='darkgray')
-
-        self.varBody = StringVar()
-
-
-        self.btnSel = Button(self.master, text="To Copy:", width=10, height=2, command=self.selectFolder1)
-        self.btnSel.grid(row=0,column=0,padx=(30,0),pady=(30,0))
-
-        self.lblDisplay1 = Label(self.master, text="", font=("Helvetica",16), fg='black', bg='darkgray')
-        self.lblDisplay1.grid(row=3, column=1, padx=(30,0),pady=(30,0))
+def chooseDest():
+    dest = filedialog.askdirectory()
+    destEntry.insert(0, dest)
 
 
 
-        ######## Button 2 #####
-        self.btnDes = Button(self.master, text="Destination:", width=10, height=2, command=self.destination)
-        self.btnDes.grid(row=2,column=0,padx=(30,0),pady=(30,0))
+def transferFiles():
+    sourcePath = srcEntry.get()
+    destPath = destEntry.get()
+    SECONDS_IN_DAY = 24 * 60 * 60
+    now = time.time()
+    before = now - SECONDS_IN_DAY
 
 
-        #################
-
-        
-
-        self.btnSubmit = Button(self.master, text="Check Files", width=10, height=2, command=self.check)
-        self.btnSubmit.grid(row=3, column=1, padx=(0,0),pady=(30,0), sticky=NE)
-        
-        self.btnCancel = Button(self.master, text="Cancel", width=10, height=2, command=self.cancel)
-        self.btnCancel.grid(row=3, column=1, padx=(0,90),pady=(30,0), sticky=NE)
-
-    def selectFolder1(self):
-        fd.askdirectory()
-
-    def destination(self):
-        fd.askdirectory()
+    def last_mod_time(fname):
+        return os.path.getmtime(fname)
+    for fname in os.listdir(sourcePath):
+        src_fname = os.path.join(sourcePath, fname)
+        if last_mod_time(src_fname) > before:
+            dst_fname = os.path.join(destPath, fname)
+            shutil.move(src_fname, dst_fname)
 
 
-    
-    
+srcEntry = Entry(root)
+srcEntry.pack(pady=26)
+destEntry = Entry(root)
+destEntry.pack(pady=28)
 
-    
-
-    
-            
-    
-    def cancel(self):
-        self.master.destroy()
-        
-
-
-
-
-
-
-if __name__ == "__main__":
-    root = Tk()
-    App = ParentWindow(root)
-    root.mainloop()
+srcButton = Button(root, text="Source Folder", command=chooseSource)
+srcButton.pack(pady=24)
+destButton = Button(root, text="Destination Folder", command=chooseDest)
+destButton.pack(pady=26)
+check_button = Button(root, text="File Check", command=transferFiles)
+check_button.pack(pady=24)
+root.mainloop()
