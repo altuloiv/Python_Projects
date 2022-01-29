@@ -7,7 +7,7 @@ class djangoClasses(models.Model):
     InstructorName = models.CharField(max_length=60, default="", blank=False) ##instructor for the course
     Duration = models.FloatField(blank=False) ##how long the course is
 
-    ###Shows the name of the objects as the tittle of the class. 
+    ###Shows the name of the objects as the tittle of the class. s
     objects = models.Manager
     def __str__(self):
         return self.Title
